@@ -34,10 +34,10 @@ app.use(function (err, req, res, next) {
   });
 });
 
-auth.initizeCache();
+auth.initializeCache();
 cron.schedule('* */12 * * *', () => {
-  auth.initizeCache();
-  //console.log('Running a task every 12 hours');
+  auth.initializeCache();
+  console.log('Running a task every 12 hours');
 });
 
 app.listen(PORT, () => {

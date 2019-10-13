@@ -1,11 +1,11 @@
 const queries = require('./db/queries');
 var mcache = require('memory-cache');
 
-module.exports.initizeCache = function (req, res, next) {
+module.exports.initializeCache = function (req, res) {
     queries.getAllUser().then(accounts => {
         if (accounts) {
             for (let account of accounts) {
-                console.log("Putting cache for " + account.username);
+                //console.log("Putting cache for " + account.username);
                 mcache.put(account.username, 1, 86400000);
             }
         }
@@ -13,10 +13,10 @@ module.exports.initizeCache = function (req, res, next) {
 };
 
 module.exports.updateCache = function (req, res, next) {
-    console.log("Inside updatecache");
+    //console.log("Inside updatecache");
     var key = req.body.username;
     var cachedcnt = mcache.get(key);
-    console.log(cachedcnt);
+    //console.log(cachedcnt);
     if (cachedcnt) {
         mcache.put(key, cachedcnt + 1)
         if (cachedcnt > 5) {

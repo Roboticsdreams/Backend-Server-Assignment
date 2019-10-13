@@ -15,17 +15,48 @@ const accounts = [
     { id: 5, auth_id: '6DLH8A25XZ', username: 'azr5' }];
 
 describe("MiddlewareTest", function () {
-    it("isAuthorized - Positive", function () {
-        sinon.stub(queries, 'getUser').callsFake(function () {
-            return accounts[0];
-        });
+    it("isAuthorized - Positive", async function () {
+        sinon.stub(queries, 'getUser').resolves(accounts[0]);
         let req = {
             body: {
                 username: accounts[0].username,
                 auth_id: accounts[0].auth_id,
             }
         };
-        should(auth.isAuthorized(req)).be.true;
+        const next = sinon.spy();
+        const res = sinon.spy();
+        await auth.isAuthorized(req, res, next);
+        expect(next.calledOnce).to.be.true;
+
+        queries.getUser.restore(); // restore original functionality
+    });
+    it("isAuthorized - User not found", async function () {
+        sinon.stub(queries, 'getUser').resolves(accounts[0]);
+        let req = {
+            body: {
+                username: accounts[1].username,
+                auth_id: accounts[1].auth_id,
+            }
+        };
+        const res = sinon.spy();
+        const next = sinon.spy();
+        await auth.isAuthorized(req, res, next);
+        const error = next.getCall(0);
+        expect(error).to.be.match(/User not found/);
+        queries.getUser.restore(); // restore original functionality
+    });
+    it("isAuthorized - User not Authorized", async function () {
+        sinon.stub(queries, 'getUser').resolves(accounts[0]);
+        let req = {
+            body: {
+                username: accounts[1].username,
+            }
+        };
+        const res = sinon.spy();
+        const next = sinon.spy();
+        await auth.isAuthorized(req, res, next);
+        const error = next.getCall(0);
+        expect(error).to.be.match(/Not authorized! Go back!/);
         queries.getUser.restore(); // restore original functionality
     });
 });
