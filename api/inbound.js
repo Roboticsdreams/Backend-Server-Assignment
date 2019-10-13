@@ -13,11 +13,10 @@ const isValidate = function (req, res, next) {
         var tolength = to.toString().length;
 
         var errors = [];
-        errors.status = 400;
         if (!from) {
             errors.push('from parameter is missing');
         }
-        else if ((fromlength < 6 || fromlength > 16)
+        else if ((fromlength < 5 && fromlength > 17)
             || (!Number.isInteger(from))) {
 
             errors.push('from parameter is invalid');
@@ -26,7 +25,7 @@ const isValidate = function (req, res, next) {
         if (!to) {
             errors.push('to parameter is missing');
         }
-        else if ((tolength < 6 || tolength > 16)
+        else if ((tolength < 5 && tolength > 17)
             || (!Number.isInteger(to))) {
 
             errors.push('to parameter is invalid');
@@ -35,11 +34,12 @@ const isValidate = function (req, res, next) {
         if (!text) {
             errors.push('text parameter is missing');
         }
-
+        console.log(errors);
         if (errors.length == 0) {
             return next();
         }
         else {
+            errors.status = 400;
             return next(errors);
         }
     }
