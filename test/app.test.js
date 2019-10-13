@@ -16,7 +16,7 @@ describe('App Test', () => {
                     });
             })
             .then(() => {
-                app = require('../app');
+                app = require('../src/server');
             });
     });
 

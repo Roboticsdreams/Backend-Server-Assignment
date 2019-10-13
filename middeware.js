@@ -1,5 +1,4 @@
 const queries = require('./db/queries');
-const bcrypt = require('bcrypt');
 var mcache = require('memory-cache');
 
 module.exports.initizeCache = function (req, res, next) {
@@ -36,16 +35,14 @@ module.exports.isAuthorized = function (req, res, next) {
     if (username && auth_id) {
         queries.getUser(username).then(account => {
             if (account) {
-                bcrypt.compare(auth_id, account.auth_id, function (err, result) {
-                    if (result === true) {
-                        return next();
-                    }
-                    else {
-                        var err = new Error('User not found');
-                        err.status = 400;
-                        return next(err);
-                    }
-                });
+                if (auth_id == account.auth_id) {
+                    return next();
+                }
+                else {
+                    var err = new Error('User not found');
+                    err.status = 400;
+                    return next(err);
+                }
             }
         });
     }

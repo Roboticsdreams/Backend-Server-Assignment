@@ -1,25 +1,22 @@
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-
 module.exports = [
     {
-        auth_id: bcrypt.hashSync('20S0KPNOIM', saltRounds),
+        auth_id: '20S0KPNOIM',
         username: 'azr1',
     },
     {
-        auth_id: bcrypt.hashSync('54P2EOKQ47', saltRounds),
+        auth_id: '54P2EOKQ47',
         username: 'azr2',
     },
     {
-        auth_id: bcrypt.hashSync('9LLV6I4ZWI', saltRounds),
+        auth_id: '9LLV6I4ZWI',
         username: 'azr3',
     },
     {
-        auth_id: bcrypt.hashSync('YHWE3HDLPQ', saltRounds),
+        auth_id: 'YHWE3HDLPQ',
         username: 'azr4',
     },
     {
-        auth_id: bcrypt.hashSync('6DLH8A25XZ', saltRounds),
+        auth_id: '6DLH8A25XZ',
         username: 'azr5',
     },
 ];
