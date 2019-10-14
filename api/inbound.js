@@ -34,7 +34,7 @@ const isValidate = function (req, res, next) {
         if (!text) {
             errors.push('text parameter is missing');
         }
-        console.log(errors);
+
         if (errors.length == 0) {
             return next();
         }

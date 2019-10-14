@@ -37,10 +37,10 @@ app.use(function (err, req, res, next) {
 auth.initializeCache();
 cron.schedule('* */12 * * *', () => {
   auth.initializeCache();
-  console.log('Running a task every 12 hours');
+  //console.log('Running a task every 12 hours');
 });
 
 app.listen(PORT, () => {
-  console.log('Listening on port: ' + PORT);
+  //console.log('Listening on port: ' + PORT);
 });
 module.exports = app;
