@@ -104,7 +104,7 @@ describe('IntegrationTest', () => {
                 })
                 .expect(400)
                 .catch((err) => {
-                    //test comment
+                    //test comment new
                     expect(err[0]).to.deep.equal('from parameter is missing');
                 }).finally(() => {
                     done();
