@@ -5,14 +5,10 @@ const expect = chai.expect;
 const sinon = require("sinon");
 const auth = require("../middeware");
 const queries = require("../db/queries");
-var should = require('chai').should();
 
 const accounts = [
     { id: 1, auth_id: '20S0KPNOIM', username: 'azr1' },
-    { id: 2, auth_id: '54P2EOKQ47', username: 'azr2' },
-    { id: 3, auth_id: '9LLV6I4ZWI', username: 'azr3' },
-    { id: 4, auth_id: 'YHWE3HDLPQ', username: 'azr4' },
-    { id: 5, auth_id: '6DLH8A25XZ', username: 'azr5' }];
+    { id: 2, auth_id: '54P2EOKQ47', username: 'azr2' }];
 
 describe("MiddlewareTest", function () {
     it("isAuthorized - Positive", async function () {

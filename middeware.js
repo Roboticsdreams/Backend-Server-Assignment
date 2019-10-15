@@ -51,3 +51,59 @@ module.exports.isAuthorized = function (req, res, next) {
         return next(err);
     }
 };
+
+module.exports.isValidate = function (req, res, next) {
+    try {
+        const from = req.body.fromparam;
+        const to = req.body.toparam;
+        var text = req.body.textparam;
+        text = text.trim();
+        var fromlength = from.toString().length;
+        var tolength = to.toString().length;
+
+        var errors = [];
+        if (!from) {
+            errors.push('from parameter is missing');
+        }
+        else if ((fromlength < 5 && fromlength > 17)
+            || (!Number.isInteger(from))) {
+
+            errors.push('from parameter is invalid');
+        }
+
+        if (!to) {
+            errors.push('to parameter is missing');
+        }
+        else if ((tolength < 5 && tolength > 17)
+            || (!Number.isInteger(to))) {
+
+            errors.push('to parameter is invalid');
+        }
+
+        if (!text) {
+            errors.push('text parameter is missing');
+        }
+
+        if ((from == to)
+            || (from === to)) {
+
+            errors.push("sms from " + from + " to " + to + " blocked by STOP request");
+            console.log(errors);
+        }
+
+        if (errors.length == 0) {
+            return next();
+        }
+        else {
+            errors.status = 400;
+            return next(errors);
+        }
+    }
+    catch (err) {
+        res.status(400);
+        res.json({
+            'message': '',
+            'error': 'unknown failure'
+        });
+    }
+};
