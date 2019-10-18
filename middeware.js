@@ -1,11 +1,10 @@
 const queries = require('./db/queries');
 var mcache = require('memory-cache');
 
-module.exports.initializeCache = function (req, res) {
+module.exports.initializeCache = function () {
     queries.getAllUser().then(accounts => {
         if (accounts) {
             for (let account of accounts) {
-                //console.log("Putting cache for " + account.username);
                 mcache.put(account.username, 1, 86400000);
             }
         }
@@ -13,19 +12,23 @@ module.exports.initializeCache = function (req, res) {
 };
 
 module.exports.updateCache = function (req, res, next) {
-    //console.log("Inside updatecache");
+    var maxcachecnt = 10;
+    if (req.app.get('env') === 'test') {
+        maxcachecnt = 2;
+    }
     var key = req.body.username;
     var cachedcnt = mcache.get(key);
-    //console.log(cachedcnt);
     if (cachedcnt) {
         mcache.put(key, cachedcnt + 1)
-        if (cachedcnt > 5) {
+        if (cachedcnt > maxcachecnt) {
             var err = new Error('limit reached for ' + key);
             err.status = 400;
             return next(err);
         }
+        else {
+            return next();
+        }
     }
-    return next();
 };
 
 module.exports.isAuthorized = function (req, res, next) {
@@ -42,6 +45,11 @@ module.exports.isAuthorized = function (req, res, next) {
                     err.status = 400;
                     return next(err);
                 }
+            }
+            else {
+                var err = new Error('User not found');
+                err.status = 400;
+                return next(err);
             }
         });
     }
@@ -65,7 +73,7 @@ module.exports.isValidate = function (req, res, next) {
         if (!from) {
             errors.push('from parameter is missing');
         }
-        else if ((fromlength < 5 && fromlength > 17)
+        else if ((fromlength < 5 || fromlength > 17)
             || (!Number.isInteger(from))) {
 
             errors.push('from parameter is invalid');
@@ -74,7 +82,7 @@ module.exports.isValidate = function (req, res, next) {
         if (!to) {
             errors.push('to parameter is missing');
         }
-        else if ((tolength < 5 && tolength > 17)
+        else if ((tolength < 5 || tolength > 17)
             || (!Number.isInteger(to))) {
 
             errors.push('to parameter is invalid');
@@ -88,15 +96,16 @@ module.exports.isValidate = function (req, res, next) {
             || (from === to)) {
 
             errors.push("sms from " + from + " to " + to + " blocked by STOP request");
-            console.log(errors);
         }
 
         if (errors.length == 0) {
             return next();
         }
         else {
-            errors.status = 400;
-            return next(errors);
+            var err = {};
+            err.error = errors;
+            err.status = 400;
+            return next(err);
         }
     }
     catch (err) {

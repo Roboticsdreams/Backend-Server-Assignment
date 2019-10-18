@@ -25,6 +25,7 @@ describe('IntegrationTest', () => {
                 done();
             });
     });
+
     describe('AppTest', () => {
         it('Invalid Route', (done) => {
             request(app)
@@ -116,96 +117,6 @@ describe('IntegrationTest', () => {
                     done();
                 });
         });
-        it('Inbound SMS - From is missing', (done) => {
-            request(app)
-                .post('/api/inbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": "",
-                    "toparam": 4924195509196,
-                    "textparam": " test  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('from parameter is missing');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Inbound SMS - From is invalid', (done) => {
-            request(app)
-                .post('/api/inbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": "12345SSS",
-                    "toparam": 4924195509196,
-                    "textparam": " test  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('from parameter is invalid');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Inbound SMS - To is missing', (done) => {
-            request(app)
-                .post('/api/inbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": 1234567,
-                    "toparam": "",
-                    "textparam": " test  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('to parameter is missing');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Inbound SMS - To is invalid', (done) => {
-            request(app)
-                .post('/api/inbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": 1234512,
-                    "toparam": "1234456M",
-                    "textparam": " test  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('to parameter is invalid');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Inbound SMS - Text is missing', (done) => {
-            request(app)
-                .post('/api/inbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": 1234512,
-                    "toparam": 4924195509196,
-                    "textparam": "  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('text parameter is missing');
-                }).finally(() => {
-                    done();
-                });
-        });
     });
 
     describe('OutboundTest', () => {
@@ -266,6 +177,24 @@ describe('IntegrationTest', () => {
                     done();
                 });
         });
+        it('Outbound SMS - Limit Reached', (done) => {
+            request(app)
+                .post('/api/outbound/sms')
+                .set('Content-Type', 'application/json')
+                .send({
+                    "auth_id": "20S0KPNOIM",
+                    "username": "azr1",
+                    "fromparam": 492419550919,
+                    "toparam": 4924195509196,
+                    "textparam": " test  "
+                })
+                .expect(400)
+                .catch((err) => {
+                    expect(err[0]).to.deep.equal('limit reached for azr1');
+                }).finally(() => {
+                    done();
+                });
+        });
         it('Outbound SMS - Unknown Failure', (done) => {
             request(app)
                 .post('/api/outbound/sms')
@@ -281,114 +210,6 @@ describe('IntegrationTest', () => {
                     res.body.should.be.a('object');
                     res.body.should.have.property('message').equal('');
                     res.body.should.have.property('error').equal('unknown failure');
-                    done();
-                });
-        });
-        it('Outbound SMS - From is missing', (done) => {
-            request(app)
-                .post('/api/outbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": "",
-                    "toparam": 4924195509196,
-                    "textparam": " test  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('from parameter is missing');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Outbound SMS - From is invalid', (done) => {
-            request(app)
-                .post('/api/outbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": "12345SSS",
-                    "toparam": 4924195509196,
-                    "textparam": " test  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('from parameter is invalid');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Outbound SMS - To is missing', (done) => {
-            request(app)
-                .post('/api/outbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": 1234567,
-                    "toparam": "",
-                    "textparam": " test  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('to parameter is missing');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Outbound SMS - To is invalid', (done) => {
-            request(app)
-                .post('/api/outbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": 1234512,
-                    "toparam": 1234,
-                    "textparam": " test  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('to parameter is invalid');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Outbound SMS - Text is missing', (done) => {
-            request(app)
-                .post('/api/outbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": 1234512,
-                    "toparam": 4924195509196,
-                    "textparam": "  "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('text parameter is missing');
-                }).finally(() => {
-                    done();
-                });
-        });
-        it('Outbound SMS - Same From and To', (done) => {
-            request(app)
-                .post('/api/outbound/sms')
-                .set('Content-Type', 'application/json')
-                .send({
-                    "auth_id": "20S0KPNOIM",
-                    "username": "azr1",
-                    "fromparam": 1234567,
-                    "toparam": 1234567,
-                    "textparam": " text "
-                })
-                .expect(400)
-                .catch((err) => {
-                    expect(err[0]).to.deep.equal('sms from 1234567 to 1234567 blocked by STOP request');
-                }).finally(() => {
                     done();
                 });
         });

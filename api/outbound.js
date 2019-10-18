@@ -3,7 +3,7 @@ const router = express.Router();
 const queries = require('../db/queries');
 const auth = require('../middeware');
 
-router.post('/', auth.isValidate, (req, res) => {
+router.post('/', auth.isValidate, auth.updateCache, (req, res) => {
     queries.getPhonelist(req.body.username, req.body.toparam)
         .then(account => {
             if (account.length == 0) {

@@ -16,7 +16,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 app.use('/api/inbound/sms', auth.isAuthorized, inbound);
-app.use('/api/outbound/sms', auth.isAuthorized, auth.updateCache, outbound);
+app.use('/api/outbound/sms', auth.isAuthorized, outbound);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
@@ -35,9 +35,8 @@ app.use(function (err, req, res, next) {
 });
 
 auth.initializeCache();
-cron.schedule('* */12 * * *', () => {
+cron.schedule('* 0 * * *', () => {
   auth.initializeCache();
-  //console.log('Running a task every 12 hours');
 });
 
 app.listen(PORT, () => {
