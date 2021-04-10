@@ -14,7 +14,7 @@
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
     "express": "^4.17.1",
-    "knex": "^0.19.1",
+    "knex": "^0.19.5",
     "memory-cache": "^0.2.0",
     "morgan": "~1.9.0",
     "node-cron": "^2.0.3",
